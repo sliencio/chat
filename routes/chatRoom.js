@@ -41,8 +41,8 @@ class chatRoom {
             socket.on('privateMes', (friendName, mes) => {
                 if (clientMap[friendName]) {
                     clientMap[friendName].emit('message', friendName + ": " + mes);
-                    socket.emit('message', socket.userName + ": " + mes)
                 }
+                socket.emit('message', socket.userName + ": " + mes)
             });
 
             socket.on('numConnections', (ctx) => {

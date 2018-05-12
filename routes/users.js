@@ -17,11 +17,8 @@ router.post('/register', async (ctx) => {
     var psw = ctx.request.body.password;
 
     var phoneReg = /^1[0-9]{10}/;
-    var nameReg = /^[\u4e00-\u9fa5]{2,4}$/;
-    if (!phoneReg.test(phoneNum) || !nameReg.test(userName)) {
-        await ctx.render('login', {
-            registered: false
-        });
+    if (!phoneReg.test(phoneNum) || !userName || userName == undefined) {
+        await ctx.render(loginView);
         return;
     }
 
@@ -36,9 +33,7 @@ router.post('/register', async (ctx) => {
             userName: userName
         });
         if (ret.length > 0) {
-            await ctx.render('login', {
-                registered: false
-            });
+            await ctx.render(loginView);
             return;
         }
     }
@@ -51,9 +46,7 @@ router.post('/register', async (ctx) => {
     });
     //注册成功，进入登录界面
     if (ret.result.ok == 1) {
-        await ctx.render(loginView, {
-            registered: true
-        });
+        await ctx.render(loginView);
     }
 });
 
@@ -97,10 +90,10 @@ router.post('/login', async (ctx) => {
 
     //进入聊天室
     if (passAuth) {
-        console.log("准备进入聊天室："+name);
+        console.log("准备进入聊天室：" + name);
         ctx.session.username = name;
-        console.log("准备进入聊天室44："+ctx.session.username);
-        
+        console.log("准备进入聊天室44：" + ctx.session.username);
+
         ctx.redirect('/chat/publicChat')
     }
 });

@@ -207,15 +207,14 @@
             privateChat(false, null);
         });
 
-        var str = isPrivateMes ? "privateMes" : "message";
         $('#sendBtn').on('click', function (event) {
             //私聊
             if (isPrivateMes) {
-                socket.emit(str, friendName, $('#input').val());
+                socket.emit('privateMes', friendName, $('#input').val());
             }
             //公聊
             else {
-                socket.emit(str, $('#input').val());
+                socket.emit('message', $('#input').val());
             }
         });
 
@@ -223,10 +222,10 @@
             if (event.keyCode == 13) {
                 //私聊 
                 if (isPrivateMes) {
-                    socket.emit(str, friendName, $('#input').val());
+                    socket.emit('privateMes', friendName, $('#input').val());
                 } //公聊 
                 else {
-                    socket.emit(str, $('#input').val());
+                    socket.emit('message', $('#input').val());
                 }
             }
         });

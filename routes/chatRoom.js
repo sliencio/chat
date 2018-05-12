@@ -53,4 +53,3 @@ class chatRoom {
 }
 
 module.exports = new chatRoom();
-

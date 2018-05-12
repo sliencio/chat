@@ -69,9 +69,6 @@ router.post('/login', async (ctx) => {
     }
 
     var passAuth = false;
-
-    // var allUsers = await mongoDM.query('user', {});
-
     //进行查询数据库,判断用户是否存在
     var ret = await mongoDM.query('user', {
         phoneNum: name,
@@ -81,11 +78,6 @@ router.post('/login', async (ctx) => {
     if (ret.length > 0) {
         // 进入聊室天 第二个参数可以用来更新数据
         passAuth = true;
-        // var data = dealUserStatus(allUsers,DataManager.OnLineList);
-        // await ctx.render(chatView, {
-        //     loginData: ret[0],
-        //     online:data
-        // });
     }
     //登录不成功
     else {
@@ -96,11 +88,6 @@ router.post('/login', async (ctx) => {
         //通过验证
         if (ret.length > 0) {
             passAuth = true;
-            // var data = dealUserStatus(allUsers,DataManager.OnLineList);
-            // await ctx.render(chatView, {
-            //     loginData: ret[0],
-            //     online:data
-            // });
         }
         //未通过验证
         else {
@@ -110,23 +97,13 @@ router.post('/login', async (ctx) => {
     }
 
     //进入聊天室
-    if(passAuth){
+    if (passAuth) {
         ctx.session.username = name;
         ctx.redirect('/chat/publicChat')
     }
 });
 
-function dealUserStatus(allUser,onLine){
-    for(var i =0;i<allUser.length;i++){
-        var username = allUser[i]['userName'];
-        if(onLine&&onLine[username]!=undefined){
-            allUser[i]['status'] =1;
-        }else{
-            allUser[i]['status'] =0;
-        }
-    }
-    return allUser;
-}
+
 
 //登录
 router.get('/', async (ctx) => {

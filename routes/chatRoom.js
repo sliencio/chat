@@ -38,10 +38,10 @@ class chatRoom {
             });
 
             // 私聊
-            socket.on('privateMes', (from, to, mes) => {
-                if (clientMap[from] && clientMap[to]) {
-                    clientMap[from].emit('message', mes);
-                    clientMap[to].emit('message', socket.userName + ": " + mes)
+            socket.on('privateMes', (friendName, mes) => {
+                if (clientMap[friendName]) {
+                    clientMap[friendName].emit('message', friendName + ": " + mes);
+                    socket.emit('message', socket.userName + ": " + mes)
                 }
             });
 

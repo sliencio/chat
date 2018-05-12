@@ -6,8 +6,6 @@ const DataManager = require('../DataManager/DataManager')
 router.prefix('/users')
 
 var loginView = 'users/login'
-var chatView = 'chatRoom/chat'
-
 /**
  * 注册
  */
@@ -78,6 +76,7 @@ router.post('/login', async (ctx) => {
     if (ret.length > 0) {
         // 进入聊室天 第二个参数可以用来更新数据
         passAuth = true;
+        name = ret[0].userName;
     }
     //登录不成功
     else {
@@ -98,7 +97,10 @@ router.post('/login', async (ctx) => {
 
     //进入聊天室
     if (passAuth) {
+        console.log("准备进入聊天室："+name);
         ctx.session.username = name;
+        console.log("准备进入聊天室44："+ctx.session.username);
+        
         ctx.redirect('/chat/publicChat')
     }
 });

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Koa-Socket Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-family: -apple-system, '.SFNSDisplay-Regular', 'Helvetica Neue', 'Arial', sans-serif;
+            color: #32322C;
+        }
+
+        button {
+            margin-bottom: 8px;
+            margin-left: 630px;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+            background: #13C4A3;
+            transition: all .177s linear;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #36F1CD;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, .3);
+        }
+
+        .connections {
+            top: 10px;
+            position: fixed;
+            width: 60px;
+            height: 50px;
+            right: 20px;
+            line-height: 44px;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 700;
+            background: rgba(0, 0, 0, .45);
+            color: white;
+            border-radius: 4px;
+            boder-color: red
+        }
+
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+            background: #ee4d50;
+        }
+
+        #messages {
+            position: absolute;
+            top: 50px;
+            bottom: 100px;
+            left: 20px;
+            right: 300px;
+            background-color: #9d9d9d;
+            overflow: auto;
+            overflow-x: hidden;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+        /*用户列表*/
+        #userlist {
+            padding: 15px 15px;
+            position: absolute;
+            top: 50px;
+            bottom: 100px;
+            right: 10px;
+            width: 220px;
+            background-color: #cccccc;
+            overflow: auto;
+            overflow-x: hidden;
+        }
+
+        .onlineItem {
+            background-color: #6eb6de;
+            width: 220px;
+            height: 40px;
+            vertical-align: middle;
+            text-align: left;
+            border:1px solid #000;
+        }
+
+        .offlineItem {
+            background-color: #a0b3b0;
+            width: 220px;
+            height: 40px;
+            vertical-align: middle;
+            text-align: left;
+            border:1px solid #000;
+        }
+
+        #userlist li {
+            list-style-type: none;
+            font-size: 18px;
+            margin-left: 10px;
+            pointer-events:none;
+        }
+
+        #input {
+            position: absolute;
+            margin-right: 200px;
+            margin-bottom: 8px;
+            padding: 10px 20px;
+            width: 550px;
+            height: 20px;
+            font-size: 20px;
+            border-color: #985f0d;
+        }
+
+        #inputDiv {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            right: 20px;
+        }
+        #chatTitle{
+            position: absolute;
+            top: 0px;
+            padding: 15px;
+        }
+
+        #returnPublic{
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+<!--聊天框-->
+<h2 id="chatTitle">聊天室</h2>
+<ul id="messages"></ul>
+<ul id="userlist">
+    {{each online}}
+        {{if $value.status==1}}
+        <div class="onlineItem" value="{{$value.userName}}"><li>{{$value.userName}}</li></div>
+        {{else if $value.userName == userName}}
+        <div class="onlineItem" value="{{$value.userName}}"><li>{{$value.userName}}</li></div>
+        {{else}}
+        <div class="offlineItem" value="{{$value.userName}}"><li>{{$value.userName}}</li></div>
+        {{/if}}
+    {{/each}}
+</ul>
+<input type="hidden" id="data" value="{{userName}}"/>
+<div id="inputDiv">
+    <input id="input"/>
+    <button class="js-btn">发 送</button>
+    <button id="returnPublic">返回大厅</button>
+</div>
+
+<div class="connections"><span class="js-connect">1</span></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+<script>
+    var socket = io();
+    var btn = document.querySelector('.js-btn');
+    var returnBtn = document.querySelector('#returnPublic');
+    socket.emit('join', $('#data').val());
+
+    returnBtn.addEventListener('click', function (event) {
+        privateChat(false);
+    });
+
+    privateChat(false);
+
+    var connections = document.querySelector('.js-connect');
+    socket.on('connections', function (mes) {
+        console.log('connected', mes.numConnections);
+        connections.innerHTML = mes.numConnections;
+    });
+
+    socket.on('message', function (msg) {
+        $('#messages').append($('<li>').text(msg));
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    $('.onlineItem').click(function() {
+        var name = $(this).children('li').text()
+        if(name!=$('#data').val()){
+            privateChat(true)
+            // $.get("/chat/privateChat?self="+$('#data').val()+"&friend="+name);
+        }
+    });
+    $('.offlineItem').click(function() {
+        var name = $(this).children('li').text()
+        if(name!=$('#data').val()){
+            // $.get("/chat/privateChat?self="+$('#data').val()+"&friend="+name);
+            privateChat(true)
+        }
+    });
+
+
+    function privateChat(flag) {
+        var rightMar = flag?20:300;
+        if(flag){
+            $('#userlist').hide()
+            $('#returnPublic').show()
+        }else{
+            $('#userlist').show()
+            $('#returnPublic').hide()
+        }
+        $('#messages').css('right',rightMar);
+        var str = flag?"privateMes":"message";
+        btn.addEventListener('click', function (event) {
+            socket.emit(str, $('#input').val());
+        });
+
+        $('#input').on('keydown', function (event) {
+            if (event.keyCode == 13) {
+                socket.emit(str, $('#input').val());
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link rel="stylesheet" href="css/basic.css"/>
+
+    <style>
+        .table{
+            width:100%;
+            border-collapse: collapse;
+        }
+        .table td,.table th{
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<br/>
+<br/>
+<a href="/admin/add">增加用户</a>
+<br/>
+<br/>
+    <table class="table">
+
+        <tr>
+            <th>用户名</th>
+            <th>密 码</th>
+            <th>操作</th>
+        </tr>
+
+        {{each list}}
+        <tr>
+            <td>{{$value.userName}}</td>
+            <td>{{$value.password}}</td>
+            <!--@符号，原封不动的输出  $取数组里面的自带属性，$value $index等等-->
+            <td><a href="/admin/edit?id={{@$value._id}}">编辑</a> 　<a href="/admin/del?id={{@$value._id}}">删除</a></td>
+        </tr>
+        {{/each}}
+
+
+
+    </table>
+</body>
+</html>

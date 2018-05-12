@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign-Up/Login Form</title>
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <style>
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-y: scroll;
+        }
+
+        body {
+            background: #c1bdba;
+            font-family: 'Titillium Web', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1ab188;
+            transition: .5s ease;
+        }
+
+        a:hover {
+            color: #179b77;
+        }
+
+        .form {
+            background: rgba(19, 35, 47, 0.9);
+            padding: 40px;
+            max-width: 600px;
+            margin: 40px auto;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+        }
+
+        .tab-group {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px 0;
+        }
+
+        .tab-group:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .tab-group li a {
+            display: block;
+            text-decoration: none;
+            padding: 15px;
+            background: rgba(160, 179, 176, 0.25);
+            color: #a0b3b0;
+            font-size: 20px;
+            float: left;
+            width: 50%;
+            text-align: center;
+            cursor: pointer;
+            transition: .5s ease;
+        }
+
+        .tab-group li a:hover {
+            background: #179b77;
+            color: #ffffff;
+        }
+
+        .tab-group .active a {
+            background: #1ab188;
+            color: #ffffff;
+        }
+
+        .tab-content>div:last-child {
+            display: none;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-weight: 300;
+            margin: 0 0 40px;
+        }
+
+        label {
+            position: absolute;
+            -webkit-transform: translateY(6px);
+            transform: translateY(6px);
+            left: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.25s ease;
+            -webkit-backface-visibility: hidden;
+            pointer-events: none;
+            font-size: 22px;
+        }
+
+        label .req {
+            margin: 2px;
+            color: #1ab188;
+        }
+
+        label.active {
+            -webkit-transform: translateY(50px);
+            transform: translateY(50px);
+            left: 2px;
+            font-size: 14px;
+        }
+
+        label.active .req {
+            opacity: 0;
+        }
+
+        label.highlight {
+            color: #ffffff;
+        }
+
+        input,
+        textarea {
+            font-size: 22px;
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 5px 10px;
+            background: none;
+            background-image: none;
+            border: 1px solid #a0b3b0;
+            color: #ffffff;
+            border-radius: 0;
+            transition: border-color .25s ease, box-shadow .25s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: 0;
+            border-color: #1ab188;
+        }
+
+        textarea {
+            border: 2px solid #a0b3b0;
+            resize: vertical;
+        }
+
+        .field-wrap {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .top-row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .top-row>div {
+            float: left;
+            width: 48%;
+            margin-right: 4%;
+        }
+
+        .top-row>div:last-child {
+            margin: 0;
+        }
+
+        .button {
+            border: 0;
+            outline: none;
+            border-radius: 0;
+            padding: 15px 0;
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            background: #1ab188;
+            color: #ffffff;
+            transition: all 0.5s ease;
+            -webkit-appearance: none;
+        }
+
+        .button:hover,
+        .button:focus {
+            background: #179b77;
+        }
+
+        .button-block {
+            display: block;
+            width: 100%;
+        }
+
+        .forgot {
+            margin-top: -20px;
+            text-align: right;
+        }
+        
+        #adminLogin{
+            display: block;
+            /*float: right;*/
+            margin-left: 30px;
+            padding: 20px;
+
+        }
+    </style>
+
+</head>
+
+<body>
+    <a href="/admin"><h3 id="adminLogin">管理员登录</h3></a>
+
+    <div class="form">
+
+        <ul class="tab-group">
+            <li class="tab active">
+                <a href="#login">登 录</a>
+            </li>
+            <li class="tab">
+                <a href="#signup">注 册</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="login">
+                <h1>欢迎回来!</h1>
+
+                <form action="/users/login" method="post">
+
+                    <div class="field-wrap">
+                        <label>
+                            手机号
+                            <span class="req">*</span>
+                        </label>
+                        <input id="loginPhoneNum" required autocomplete="off" name="uname" />
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            密 码
+                            <span class="req">*</span>
+                        </label>
+                        <input type="password" required autocomplete="off" name="password" />
+                    </div>
+
+                    <p class="forgot">
+                        <a href="#">忘记密码?</a>
+                    </p>
+
+                    <button type="submit" class="button button-block" /> 登 录</button>
+
+                </form>
+
+            </div>
+            <div id="signup">
+                <h1>免费注册</h1>
+
+                <form action="/users/register" method="post">
+
+                    <div class="field-wrap">
+                        <label>
+                            用户名
+                            <span class="req">*</span>
+                        </label>
+                        <input name="userName" type="text" id="regName" />
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            手机号
+                            <span class="req">*</span>
+                        </label>
+                        <input name="phoneNum" type="text" maxlength="11" id="regPhoneNum" />
+                    </div>
+
+                    <div class="field-wrap">
+                        <label>
+                            密 码
+                            <span class="req">*</span>
+                        </label>
+                        <input name="password" type="password" />
+                    </div>
+
+                    <button type="submit" class="button button-block" /> 确 定</button>
+
+                </form>
+
+            </div>
+        </div>
+        <!-- tab-content -->
+
+    </div>
+    <!-- /form -->
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+    <script>
+        $('.form').find('input, textarea').on('keyup blur focus', function (e) {
+
+            var $this = $(this),
+                label = $this.prev('label');
+
+            if (e.type === 'keyup') {
+                if ($this.val() === '') {
+                    label.removeClass('active highlight');
+                } else {
+                    label.addClass('active highlight');
+                }
+            } else if (e.type === 'blur') {
+                if ($this.val() === '') {
+                    label.removeClass('active highlight');
+                } else {
+                    label.removeClass('highlight');
+                }
+            } else if (e.type === 'focus') {
+
+                if ($this.val() === '') {
+                    label.removeClass('highlight');
+                } else if ($this.val() !== '') {
+                    label.addClass('highlight');
+                }
+            }
+
+        });
+
+
+        $('.tab a').on('click', function (e) {
+
+            e.preventDefault();
+            $(this).parent().addClass('active');
+            if (this.hash == "#signup") {
+                $('#signup').find('input').attr('value', '');
+            }
+            //查找所有类名为active
+            $(this).parent().siblings().removeClass('active');
+
+            target = $(this).attr('href');
+
+            $('.tab-content > div').not(target).hide();
+
+            $(target).fadeIn(600);
+
+        });
+
+        //对象选择器
+        function $sel(id, tabname) {
+            if (id != "" && tabname != "") {
+                var tem_obj = document.getElementById(id);
+                return tem_obj.getElementsByTagName(tabname);
+            } else if (id != "") {
+                return document.getElementById(id);
+            } else {
+                return document.getElementsByTagName(tabname);
+            }
+        }
+
+        //电话号码验证
+        function isnum(obj) {
+            var reg = /^1[0-9]{10}/;
+            if (!reg.test(obj.value)) {
+                alert("请正确填写手机号！");
+                obj.value = "";
+            }
+        }
+
+        //验证邮件格式
+        function ismail(obj) {
+            var reg = /[a-zA-Z0-9]{1,10}@[a-zA-Z0-9]{1,5}\.[a-zA-Z0-9]{1,5}/;
+            if (!reg.test(obj.value)) {
+                alert("请正确填写邮箱！");
+                obj.value = "";
+            }
+        }
+
+        //验证用户名格式
+        function isname(obj) {
+            var reg = /^[\u4e00-\u9fa5]{2,4}$/;
+            if (!reg.test(obj.value)) {
+                alert("请正确填写姓名！姓名为两到四个汉字。");
+                obj.value = "";
+            }
+        }
+
+        //初始化验证
+        function init() {
+            注册一个失去焦点的事件
+            $sel("regPhoneNum", "").onblur = function () {
+                isnum(this);
+            }
+            $sel("loginPhoneNum", "").onblur = function () {
+                isnum(this);
+            }
+
+            $sel("regName", "").onblur = function () {
+                isname(this);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

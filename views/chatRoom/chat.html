@@ -3,8 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Koa-Socket Example</title>
+    <title>Chat Room</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -14,37 +18,6 @@
             font-family: -apple-system, '.SFNSDisplay-Regular', 'Helvetica Neue', 'Arial', sans-serif;
             color: #32322C;
         }
-
-        #sendBtn {
-            bottom: 8px;
-            margin-left: 630px;
-            border: none;
-            border-radius: 4px;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: center;
-            padding: 10px;
-            background: #13C4A3;
-            transition: all .177s linear;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        #returnPublic {
-            bottom: 8px;
-            margin-left: 630px;
-            border: none;
-            border-radius: 4px;
-            font-size: 18px;
-            font-weight: 600;
-            text-align: center;
-            padding: 10px;
-            background: #13C4A3;
-            transition: all .177s linear;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
 
         button:hover {
             background: #36F1CD;
@@ -110,8 +83,6 @@
 
         .onlineItem {
             background-color: #6eb6de;
-            width: 220px;
-            height: 40px;
             vertical-align: middle;
             text-align: left;
             border: 1px solid #000;
@@ -119,8 +90,6 @@
 
         .offlineItem {
             background-color: #a0b3b0;
-            width: 220px;
-            height: 40px;
             vertical-align: middle;
             text-align: left;
             border: 1px solid #000;
@@ -131,17 +100,6 @@
             font-size: 18px;
             margin-left: 10px;
             pointer-events: none;
-        }
-
-        #input {
-            position: absolute;
-            margin-right: 200px;
-            margin-bottom: 8px;
-            padding: 10px 20px;
-            width: 550px;
-            height: 20px;
-            font-size: 20px;
-            border-color: #985f0d;
         }
 
         #inputDiv {
@@ -157,148 +115,146 @@
             padding: 15px;
         }
 
-        #returnPublic {
-            display: inline;
-        }
+
     </style>
 </head>
 
 <body>
-    <!--聊天框-->
-    <h2 id="chatTitle">聊天室</h2>
-    <ul id="messages"></ul>
-    <ul id="userlist">
-        {{each online}} {{if $value.status==1}}
-        <div class="onlineItem" value="{{$value.userName}}">
-            <li>{{$value.userName}}</li>
-        </div>
-        {{else if $value.userName == userName}}
-        <div class="onlineItem" value="{{$value.userName}}">
-            <li>{{$value.userName}}</li>
-        </div>
-        {{else}}
-        <div class="offlineItem" value="{{$value.userName}}">
-            <li>{{$value.userName}}</li>
-        </div>
-        {{/if}} {{/each}}
-    </ul>
-    <input type="hidden" id="data" value="{{userName}}" />
-    <div id="inputDiv">
-        <input id="input" />
-        <button id="sendBtn">发 送</button>
-        <button id="returnPublic">返回大厅</button>
+<!--聊天框-->
+<h2 id="chatTitle">聊天室</h2>
+<ul id="messages"></ul>
+<ul id="userlist">
+    {{each online}} {{if $value.status==1}}
+    <div class="onlineItem list-group-item list-group-item-action" value="{{$value.userName}}">
+        <li>{{$value.userName}}</li>
     </div>
-
-    <div class="connections">
-        <span class="js-connect">1</span>
+    {{else if $value.userName == userName}}
+    <div  class="onlineItem list-group-item list-group-item-action" value="{{$value.userName}}">
+        <li>{{$value.userName}}</li>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    {{else}}
+    <div href="#" class="offlineItem list-group-item list-group-item-action" value="{{$value.userName}}">
+        <li>{{$value.userName}}</li>
+    </div>
+    {{/if}} {{/each}}
+</ul>
+<input type="hidden" id="data" value="{{userName}}"/>
+<div id="inputDiv" class="row center-block form-inline">
+    <input id="input" class="m-3 col-sm-7 form-check-input form-control border-5"/>
+    <button id="sendBtn" class="btn btn-success col-sm-1">发 送</button>
+    <button id="returnPublic" class="btn btn-danger col-sm-1">返回大厅</button>
+</div>
 
-    <script>
-        var socket = io();
-        var publicMes = [];
-        var privateMes = {};
-        var isPrivateMes = false;
-        var friendName = null;
-        socket.emit('join', $('#data').val());
+<div class="connections">
+    <span class="js-connect">1</span>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.slim.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 
-        $('#returnPublic').on('click', function (event) {
-            privateChat(false, null);
-        });
+<script>
+    var socket = io();
+    var publicMes = [];
+    var privateMes = {};
+    var isPrivateMes = false;
+    var friendName = null;
+    socket.emit('join', $('#data').val());
 
-        $('#sendBtn').on('click', function (event) {
+    $('#returnPublic').on('click', function (event) {
+        privateChat(false, null);
+    });
+
+    $('#sendBtn').on('click', function (event) {
+        //私聊
+        if (isPrivateMes) {
+            socket.emit('privateMes', friendName, $('#input').val());
+        }
+        //公聊
+        else {
+            socket.emit('message', $('#input').val());
+        }
+    });
+
+    $('#input').on('keydown', function (event) {
+        if (event.keyCode == 13) {
             //私聊
             if (isPrivateMes) {
                 socket.emit('privateMes', friendName, $('#input').val());
-            }
-            //公聊
+            } //公聊
             else {
                 socket.emit('message', $('#input').val());
             }
-        });
-
-        $('#input').on('keydown', function (event) {
-            if (event.keyCode == 13) {
-                //私聊 
-                if (isPrivateMes) {
-                    socket.emit('privateMes', friendName, $('#input').val());
-                } //公聊 
-                else {
-                    socket.emit('message', $('#input').val());
-                }
-            }
-        });
-
-        privateChat(isPrivateMes, null);
-
-        var connections = document.querySelector('.js-connect');
-        socket.on('connections', function (mes) {
-            console.log('connected', mes.numConnections);
-            connections.innerHTML = mes.numConnections;
-        });
-
-        socket.on('message', function (msg) {
-            $('#messages').append($('<li>').text(msg));
-            window.scrollTo(0, document.body.scrollHeight);
-            if (isPrivateMes) {
-                if (!privateMes[friendName]) {
-                    privateMes[friendName] = [];
-                }
-                privateMes[friendName].push(msg);
-            } else {
-                publicMes.push(msg);
-            }
-        });
-
-        $('#onlineItem').click(function () {
-            var name = $(this).children('li').text()
-            var selfName = $('#data').val();
-            console.log(selfName);
-            if (name != selfName) {
-                privateChat(true, name)
-            }
-        });
-        $('.offlineItem').click(function () {
-            var name = $(this).children('li').text()
-            var selfName = $('#data').val();
-            console.log(selfName);
-            if (name != selfName) {
-                privateChat(true, name)
-            }
-        });
-
-        //私聊事件
-        function privateChat(flag, friend) {
-            //清空列表
-            $('#messages').empty();
-            //移除事件
-            isPrivateMes = flag;
-            friendName = friend;
-            var rightMar = flag ? 20 : 300;
-            if (flag) {
-                if (privateMes[friend] && privateMes[friend].length > 0) {
-                    for (var i = 0; i < privateMes[friend].length; i++) {
-                        $('#messages').append($('<li>').text(privateMes[friend][i]));
-                    }
-                }
-
-                $('#chatTitle').text("正在和 " + friend + " 聊天");
-                $('#userlist').hide()
-                $('#returnPublic').show()
-            } else {
-
-                for (var i = 0; i < publicMes.length; i++) {
-                    $('#messages').append($('<li>').text(publicMes[i]));
-                }
-
-                $('#chatTitle').text("公共频道");
-
-                $('#userlist').show()
-                $('#returnPublic').hide()
-            }
-            $('#messages').css('right', rightMar);
         }
-    </script>
+    });
+
+    privateChat(isPrivateMes, null);
+
+    var connections = document.querySelector('.js-connect');
+    socket.on('connections', function (mes) {
+        console.log('connected', mes.numConnections);
+        connections.innerHTML = mes.numConnections;
+    });
+
+    socket.on('message', function (msg) {
+        $('#messages').append($('<li>').text(msg));
+        window.scrollTo(0, document.body.scrollHeight);
+        if (isPrivateMes) {
+            if (!privateMes[friendName]) {
+                privateMes[friendName] = [];
+            }
+            privateMes[friendName].push(msg);
+        } else {
+            publicMes.push(msg);
+        }
+    });
+
+    $('#onlineItem').click(function () {
+        var name = $(this).children('li').text()
+        var selfName = $('#data').val();
+        console.log(selfName);
+        if (name != selfName) {
+            privateChat(true, name)
+        }
+    });
+    $('.offlineItem').click(function () {
+        var name = $(this).children('li').text()
+        var selfName = $('#data').val();
+        console.log(selfName);
+        if (name != selfName) {
+            privateChat(true, name)
+        }
+    });
+
+    //私聊事件
+    function privateChat(flag, friend) {
+        //清空列表
+        $('#messages').empty();
+        //移除事件
+        isPrivateMes = flag;
+        friendName = friend;
+        var rightMar = flag ? 20 : 300;
+        if (flag) {
+            if (privateMes[friend] && privateMes[friend].length > 0) {
+                for (var i = 0; i < privateMes[friend].length; i++) {
+                    $('#messages').append($('<li>').text(privateMes[friend][i]));
+                }
+            }
+
+            $('#chatTitle').text("正在和 " + friend + " 聊天");
+            $('#userlist').hide()
+            $('#returnPublic').show()
+        } else {
+
+            for (var i = 0; i < publicMes.length; i++) {
+                $('#messages').append($('<li>').text(publicMes[i]));
+            }
+
+            $('#chatTitle').text("公共频道");
+
+            $('#userlist').show()
+            $('#returnPublic').hide()
+        }
+        $('#messages').css('right', rightMar);
+    }
+</script>
 </body>
 </html>

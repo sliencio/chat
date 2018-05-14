@@ -50,7 +50,7 @@ router.post('/login', async (ctx) => {
         ctx.cookies.set('username', name);
         ctx.cookies.set('password', password);
         ctx.session.isLogin = true;
-        await ctx.render(homeView);
+        ctx.redirect('/admin');
     } else {
         await ctx.render(loginView)
     }
@@ -77,7 +77,7 @@ router.post('/doAdd', async (ctx) => {
 
     //用户是否已经存在
     var ret = await mongoDM.query(adminCollection, {
-        userName: name
+        userName: userName
     });
     if (ret.length > 0) {
         return;

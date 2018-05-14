@@ -2,27 +2,47 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title></title>
+    <title>编辑用户</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+    <style type="text/css" media="screen">
+        #middle {
+            position: relative;
+            top: 50%;
+            transform: translateY(30%);
+        }
+    </style>
 </head>
+
 <body>
+<br/>
+<br/>
+<h4 class="text-center text-primary">编辑用户</h4>
+<br/>
+<br/>
+<div class="container col-md-8 col-sm-offset-2 text-center" id="middle">
+    <div class="form-group">
+        <form action="/admin/doEdit" method="post" class="align-content-center">
+            <div class="form-inline m-2">
+                <label class="text-center col-sm-2">用户名: </label>
+                <input type="text" value="{{list.userName}}" name="username" class="form-control col-5"/>
+            </div>
 
-    <h2>编辑用户</h2>
+            <div class="form-inline m-2">
+                <label class="text-center col-sm-2">密 码:</label>
+                <input type="text" value="{{list.password}}" name="password" class="form-control col-5"/>
+            </div>
+            <div class="text-center">
+                <input type="submit" value="提交" class="btn btn-success col-2"/>
+            </div>
 
-
-    <form action="/admin/doEdit" method="post">
-
-        <input type="hidden" name="id" value="{{@list._id}}"/>
-
-        用户名：<input type="text" name="username" value="{{list.userName}}"/>
-        <br/>
-        <br/>
-
-        密 码：<input type="text" name="password" value="{{list.password}}"/>
-        <br/>
-        <br/>
-
-        <input type="submit" value="提交"/>
-    </form>
-
+        </form>
+    </div>
+</div>
 </body>
 </html>
